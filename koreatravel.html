@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>한국 여행 앨범</title>
+
+  <!-- 손글씨 스타일 폰트 적용 -->
+  <link href="https://fonts.googleapis.com/css2?family=Poor+Story&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ---------- 전체 기본 스타일 ---------- */
+    body {
+      margin: 0;
+      font-family: 'Poor Story', cursive;
+      background: linear-gradient(to bottom right, #fff0f5, #ffeef2);
+      color: #6e3f57;
+      transition: background 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+    }
+
+    /* ---------- 다크 모드 스타일 ---------- */
+    body.dark-mode {
+      background: linear-gradient(to bottom right, #1a1a1a, #333);
+      color: #f1e6ec;
+    }
+
+    /* 다크 모드 버튼 색상 조정 */
+    body.dark-mode #themeToggle {
+      background-color: #444;
+      color: #eee;
+    }
+
+    /* 다크 모드 제목 강조 */
+    body.dark-mode #groupTitle {
+      color: #ffbbdd;
+    }
+
+    /* 다크 모드 설명 강조 */
+    body.dark-mode #groupDescription {
+      color: #eec7dd;
+    }
+
+    /* ---------- 테마 전환 버튼 ---------- */
+    #themeToggle {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #f8adc8;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* ---------- 인트로 영역 ---------- */
+    #intro {
+      background: url('images/korea-cover.jpg') no-repeat center center/cover;
+      position: relative;
+      height: 100vh;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #intro::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    #intro > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 타이핑 텍스트 */
+    #typingText {
+      font-size: 48px;
+      color: #ffe4ec;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+      text-shadow: 0 0 8px #ffccdd, 0 0 16px #ffccdd;
+    }
+
+    /* 스크롤 안내 */
+    .scroll-down {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #f8c9db;
+      animation: fadeIn 3s ease-in-out, bounce 2s infinite;
+    }
+
+    /* ---------- 여행지 버튼 그룹 ---------- */
+    .group-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 40px 0;
+      animation: zoomIn 1.5s ease-out;
+    }
+
+    .group-buttons button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      background-color: #f9c7d9;
+      color: #5a2a4d;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 4px 10px rgba(249, 199, 217, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .group-buttons button:hover {
+      background-color: #f8adc8;
+      transform: scale(1.05);
+    }
+
+    /* ---------- 애니메이션 ---------- */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes zoomIn {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(249, 199, 217, 0.6); }
+      70% { box-shadow: 0 0 0 20px rgba(249, 199, 217, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(249, 199, 217, 0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- 갤러리 영역 ---------- */
+    #gallerySection {
+      display: none;
+      padding: 30px 20px;
+      animation: fadeIn 1s ease;
+    }
+
+    #gallery.jeju-effect img {
+      animation: slideUp 0.6s ease;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 30px auto;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* ---------- 제주도 설명 애니메이션 효과 ---------- */
+    #groupTitle.fade-up, #groupDescription.fade-up {
+      animation: fadeUp 1s ease-in-out;
+    }
+
+    /* ---------- 모달 ---------- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 99;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      text-align: center;
+    }
+
+    .modal img {
+      max-width: 80%;
+      max-height: 80vh;
+      margin-top: 60px;
+      border-radius: 10px;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .modal img.fade-in {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .close {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 36px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    #prevBtn { left: 20px; }
+    #nextBtn { right: 20px; }
+
+    #downloadBtn {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: #f9c7d9;
+      color: #5a2a4d;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #backBtn {
+      margin-top: 30px;
+      font-size: 16px;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      background-color: #d080a3;
+      color: white;
+      cursor: pointer;
+    }
+
+    #groupTitle {
+      font-size: 28px;
+      text-align: center;
+      margin-top: 20px;
+      color: #c94f7c;
+    }
+
+    #groupDescription {
+      text-align: center;
+      color: #905b76;
+      font-size: 18px;
+      max-width: 700px;
+      margin: 10px auto 30px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 다크 모드 버튼 -->
+  <button id="themeToggle" onclick="toggleTheme()">🌙 다크 모드</button>
+
+  <!-- 인트로 영역 -->
+  <div id="intro">
+    <h1 id="typingText"></h1>
+    <p>한국의 아름다운 도시들을 여행하며 찍은 추억들을 함께 나눠요 💕</p>
+
+    <!-- 지역 선택 버튼 -->
+    <div class="group-buttons">
+      <button onclick="showGallery('제주도')">제주도</button>
+      <button onclick="showGallery('서울')">서울</button>
+      <button onclick="showGallery('부산')">부산</button>
+      <button onclick="showGallery('울산')">울산</button>
+      <button onclick="showGallery('포항')">포항</button>
+    </div>
+
+    <!-- 안내 문구 -->
+    <div class="scroll-down">위로 스크롤해서 여행지를 골라보세요</div>
+  </div>
+
+  <!-- 갤러리 표시 영역 -->
+  <div id="gallerySection">
+    <h2 id="groupTitle"></h2>
+    <p id="groupDescription"></p>
+    <div class="gallery" id="gallery"></div>
+    <button id="backBtn" onclick="goBack()">← 뒤로가기</button>
+  </div>
+
+  <!-- 이미지 확대 모달 -->
+  <div id="modal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <button class="nav-btn" id="prevBtn" onclick="showPrev()">❮</button>
+    <img id="modalImg">
+    <button class="nav-btn" id="nextBtn" onclick="showNext()">❯</button>
+    <button id="downloadBtn" onclick="downloadImage()">사진 저장하기</button>
+  </div>
+
+  <!-- 스크립트 -->
+  <script>
+    // 이미지 그룹 설정
+    const images = {
+      제주도: Array.from({ length: 30 }, (_, i) => ({ src: `images/jeju${i + 1}.jpeg` })),
+      서울: Array.from({ length: 30 }, (_, i) => ({ src: `images/seoul${i + 1}.jpeg` })),
+      부산: Array.from({ length: 7 }, (_, i) => ({ src: `images/busan${i + 1}.jpeg` })),
+      울산: Array.from({ length: 7 }, (_, i) => ({ src: `images/ulsan${i + 1}.jpeg` })),
+      포항: Array.from({ length: 7 }, (_, i) => ({ src: `images/pohang${i + 1}.jpeg` }))
+    };
+
+    // 여행지 설명
+    const groupDescriptions = {
+      제주도: "푸른 바다와 한라산이 어우러진 제주는 자연과 평화가 가득한 섬입니다.",
+      서울: "전통과 현대가 공존하는 서울에서 다채로운 문화를 경험해보세요.",
+      부산: "바다의 도시 부산, 해운대와 광안리의 밤바다가 기다립니다.",
+      울산: "자연과 산업이 함께하는 도시, 울산에서 특별한 여정을 시작하세요.",
+      포항: "일출 명소와 바다 내음 가득한 포항에서 낭만을 느껴보세요."
+    };
+
+    let currentGroup = '';
+    let currentIndex = 0;
+    let currentImages = [];
+
+    // 인트로 텍스트 타이핑 효과
+    function typing() {
+      const text = "한국 여행 앨범에 오신 걸 환영합니다 ✨";
+      let i = 0;
+      const typingText = document.getElementById("typingText");
+      function type() {
+        if (i < text.length) {
+          typingText.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, 100);
+        }
+      }
+      type();
+    }
+
+    // 테마 토글
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      const btn = document.getElementById('themeToggle');
+      btn.textContent = document.body.classList.contains('dark-mode')
+        ? "☀️ 라이트 모드"
+        : "🌙 다크 모드";
+    }
+
+    // 갤러리 보여주기
+    function showGallery(group) {
+      currentGroup = group;
+      currentImages = images[group];
+
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('gallerySection').style.display = 'block';
+
+      // 텍스트에 애니메이션 클래스 추가
+      const title = document.getElementById('groupTitle');
+      const desc = document.getElementById('groupDescription');
+      title.classList.remove('fade-up');
+      desc.classList.remove('fade-up');
+      setTimeout(() => {
+        title.classList.add('fade-up');
+        desc.classList.add('fade-up');
+      }, 10);
+
+      title.textContent = `${group} 여행`;
+      desc.textContent = groupDescriptions[group];
+
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+      gallery.className = 'gallery';
+      if (group === '제주도') gallery.classList.add('jeju-effect');
+
+      currentImages.forEach((imgObj, index) => {
+        const imgElement = document.createElement('img');
+        imgElement.src = imgObj.src;
+        imgElement.alt = '';
+        imgElement.onclick = () => openModal(index);
+        gallery.appendChild(imgElement);
+      });
+    }
+
+    // 이미지 확대
+    function openModal(index) {
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modalImg');
+      modal.style.display = 'block';
+      modalImg.classList.remove('fade-in');
+      setTimeout(() => {
+        currentIndex = index;
+        modalImg.src = currentImages[index].src;
+        modalImg.classList.add('fade-in');
+      }, 200);
+    }
+
+    // 모달 닫기
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // 이전 이미지
+    function showPrev() {
+      if (currentIndex > 0) openModal(currentIndex - 1);
+    }
+
+    // 다음 이미지
+    function showNext() {
+      if (currentIndex < currentImages.length - 1) openModal(currentIndex + 1);
+    }
+
+    // 이미지 저장
+    function downloadImage() {
+      const img = document.getElementById('modalImg');
+      const link = document.createElement('a');
+      link.href = img.src;
+      link.download = 'downloaded-image';
+      link.click();
+    }
+
+    // 뒤로가기
+    function goBack() {
+      document.getElementById('intro').style.display = 'flex';
+      document.getElementById('gallerySection').style.display = 'none';
+    }
+
+    // 페이지 로드 시 실행
+    typing();
+  </script>
+</body>
+</html>
